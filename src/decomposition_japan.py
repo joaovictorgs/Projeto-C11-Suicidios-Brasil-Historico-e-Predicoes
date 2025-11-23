@@ -1,10 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 from statsmodels.tsa.seasonal import seasonal_decompose
 from data_processing import process_japan_data
 
 
 def analyze_japan_decomposition():
+    # Criar diretório se não existir
+    os.makedirs('images/decomposition-japan', exist_ok=True)
+    
     df_japan = process_japan_data('data/combined_processed_data.csv')
     
     df_japan['Year'] = pd.to_datetime(df_japan['Year'], format='%Y')
@@ -14,28 +18,49 @@ def analyze_japan_decomposition():
     
     decomposition = seasonal_decompose(series, model='additive', period=12)
     
-    fig, axes = plt.subplots(4, 1, figsize=(14, 10))
-    
-    decomposition.observed.plot(ax=axes[0], color='#2c3e50')
-    axes[0].set_ylabel('Observado', fontsize=12)
-    axes[0].set_title('Decomposição da Série Temporal - Suicídios no Japão', fontsize=15, fontweight='bold')
-    axes[0].grid(True, alpha=0.3)
-    
-    decomposition.trend.plot(ax=axes[1], color='#e74c3c')
-    axes[1].set_ylabel('Tendência', fontsize=12)
-    axes[1].grid(True, alpha=0.3)
-    
-    decomposition.seasonal.plot(ax=axes[2], color='#3498db')
-    axes[2].set_ylabel('Sazonalidade', fontsize=12)
-    axes[2].grid(True, alpha=0.3)
-    
-    decomposition.resid.plot(ax=axes[3], color='#95a5a6')
-    axes[3].set_ylabel('Resíduo', fontsize=12)
-    axes[3].set_xlabel('Ano', fontsize=12)
-    axes[3].grid(True, alpha=0.3)
-    
+    # Gráfico 1: Observado
+    plt.figure(figsize=(14, 5))
+    decomposition.observed.plot(color='#2c3e50', linewidth=2)
+    plt.ylabel('Observado', fontsize=12)
+    plt.title('Série Observada - Suicídios no Japão', fontsize=14, fontweight='bold')
+    plt.xlabel('Ano', fontsize=12)
+    plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig('images/decomposition_japan.png', dpi=300, bbox_inches='tight')
+    plt.savefig('images/decomposition-japan/observed.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    # Gráfico 2: Tendência
+    plt.figure(figsize=(14, 5))
+    decomposition.trend.plot(color='#e74c3c', linewidth=2)
+    plt.ylabel('Tendência', fontsize=12)
+    plt.title('Tendência - Suicídios no Japão', fontsize=14, fontweight='bold')
+    plt.xlabel('Ano', fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig('images/decomposition-japan/trend.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    # Gráfico 3: Sazonalidade
+    plt.figure(figsize=(14, 5))
+    decomposition.seasonal.plot(color='#3498db', linewidth=2)
+    plt.ylabel('Sazonalidade', fontsize=12)
+    plt.title('Sazonalidade - Suicídios no Japão', fontsize=14, fontweight='bold')
+    plt.xlabel('Ano', fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig('images/decomposition-japan/seasonal.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    # Gráfico 4: Resíduo
+    plt.figure(figsize=(14, 5))
+    decomposition.resid.plot(color='#95a5a6', linewidth=1)
+    plt.ylabel('Resíduo', fontsize=12)
+    plt.title('Resíduo - Suicídios no Japão', fontsize=14, fontweight='bold')
+    plt.xlabel('Ano', fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig('images/decomposition-japan/residual.png', dpi=300, bbox_inches='tight')
+    plt.close()
     
     print("Análise de Decomposição - Japão")
     print("=" * 50)
@@ -46,7 +71,11 @@ def analyze_japan_decomposition():
     print("\nA série apresenta um Ciclo? Sim")
     print("Razão: Possíveis fatores socioeconômicos, crises econômicas,")
     print("       mudanças culturais e políticas de saúde mental no Japão")
-    print("\nGráfico salvo em: graphs/decomposition_japan.png")
+    print("\nGráficos salvos em: images/decomposition-japan/")
+    print("  - observed.png")
+    print("  - trend.png")
+    print("  - seasonal.png")
+    print("  - residual.png")
 
 
 if __name__ == "__main__":
